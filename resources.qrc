@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/TrendMapper" >
-        <file>icon.png</file>
-    </qresource>
-</RCC>
