@@ -36,6 +36,10 @@ class DataInterfaceTest(unittest.TestCase):
             os.remove('./test.db')
         except:
             pass
+        try:
+            os.remove('./test/nofile.sqlite')
+        except:
+            pass
     ###########################################################
     # initSQL()
     
