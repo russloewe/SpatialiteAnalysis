@@ -13,7 +13,7 @@ __date__ = '2018-07-28'
 __copyright__ = 'Copyright 2018, Russell Loewe'
 
 import unittest, sqlite3, os, csv
-from Analysis.data_interface import DataInterface
+from data_interface import DataInterface
 
 
 class DataInterfaceTest(unittest.TestCase):
@@ -25,11 +25,11 @@ class DataInterfaceTest(unittest.TestCase):
     def tearDown(self):
         """Runs after each test."""
         try:
-            os.remove('./Analysis/test/testout.csv')
+            os.remove('./test/testout.csv')
         except:
             pass
         try:
-            os.remove('./Analysis/test/testout.sqlite')
+            os.remove('./test/testout.sqlite')
         except:
             pass
         try:
@@ -119,7 +119,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.indexTable('newIndex', 'CSVData', 'STATION')
         interface.indexTable('newIndex', 'CSVData', 'STATION')
     #############################################################
@@ -130,7 +130,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         stations = interface.pullUniqueKeys('STATION')
         self.assertEqual(len(stations), 63)
         interface.close()
@@ -142,7 +142,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.indexTable('newindex', interface.mainTableName,
                                                             'STATION')
         stations = interface.pullUniqueKeys('STATION', 
@@ -158,7 +158,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.dropTable('CSVData')
         self.assertTrue('CSVData' not in interface.getTables())
         
@@ -181,7 +181,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.createGeoTable('geomindex', 'STATION', 'LONGITUDE',
                 'LATITUDE', keySubset = ['USR0000OECK', 'USR0000ONPR'])
         stations = interface.pullUniqueKeys('STATION', 
@@ -197,7 +197,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:', spatialite = False)
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.createGeoTable('geomindex', 'STATION', 'LONGITUDE',
                                     'LATITUDE', initSpatialite = True)
         stations = interface.pullUniqueKeys('STATION', 
@@ -211,7 +211,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         try:
             interface.createGeoTable('geomindex', 'NotStation', 
                                            'LONGITUDE', 'LATITUDE')
@@ -268,7 +268,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface = DataInterface()
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
-        interface.connectMainSQL('./Analysis/test/geodata.db', 
+        interface.connectMainSQL('./test/geodata.db', 
                                            mainTableName = 'dataTable')
         self.assertTrue('dataTable' in interface.getTables())
         interface.close()
@@ -280,7 +280,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         try:
-            interface.connectMainSQL('./Analysis/test/nofile.db', 
+            interface.connectMainSQL('./test/nofile.db', 
                                            mainTableName = 'dataTable')
         except IOError:
             pass
@@ -295,7 +295,7 @@ class DataInterfaceTest(unittest.TestCase):
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
         try:
-            interface.connectMainSQL('./Analysis/test/geodata.db', 
+            interface.connectMainSQL('./test/geodata.db', 
                                            mainTableName = 'wrongtable')
         except AttributeError:
             pass
@@ -310,7 +310,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         try:
-            interface.connectMainSQL('./Analysis/test/geodata.db')
+            interface.connectMainSQL('./test/geodata.db')
         except AttributeError:
             pass
         else:
@@ -323,7 +323,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.mainTableName = 'dataTable'
-        interface.connectMainSQL('./Analysis/test/geodata.db')
+        interface.connectMainSQL('./test/geodata.db')
         self.assertTrue('dataTable' in interface.getTables())
         
     def test_connectMainSQL_empytDB(self):
@@ -333,7 +333,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         try:
-            interface.connectMainSQL('./Analysis/test/empty.db',
+            interface.connectMainSQL('./test/empty.db',
                                 mainTableName = 'dataTable')
         except AttributeError:
             pass
@@ -347,7 +347,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['wrongattr', 'STATION', 'TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         try:
-            interface.connectMainSQL('./Analysis/test/geodata.db',
+            interface.connectMainSQL('./test/geodata.db',
                                         mainTableName = 'dataTable')
         except AttributeError:
             pass
@@ -364,16 +364,15 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames([ 'STATION', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        self.assertTrue(interface.loadCSV('./Analysis/test/1.csv'))
-        self.assertFalse(interface.loadCSV('./Analysis/test/1.csv'))
+        self.assertTrue(interface.loadCSV('./test/1.csv'))
+        self.assertFalse(interface.loadCSV('./test/1.csv'))
         
     def test_loadCSV_badFile(self):
-        '''Make sure we handle trying to load the same file 
-        twice correctly'''
+        '''Make sure we handle trying a non existant file'''
         interface = DataInterface()
         interface.setAttributeNames(['DATE', 'notattr', 'TAVG'])
         interface.initSQL(':memory:')
-        self.assertFalse(interface.loadCSV('./Analysis/test/s1.csv'))
+        self.assertFalse(interface.loadCSV('./test/s1.csv'))
         
     def test_loadFolder(self):
         '''Make sure we can load a folder and that all the 
@@ -382,7 +381,7 @@ class DataInterfaceTest(unittest.TestCase):
         names = ['DATE', 'STATION','TAVG', 'LONGITUDE', 'LATITUDE']
         interface.setAttributeNames(names)
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         for name in names:
             self.assertTrue(len(interface.pullUniqueKeys(name)) > 10)
         
@@ -396,11 +395,11 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
-        interface.writeTableToCSV('./Analysis/test/testout.csv', 
+        interface.loadFolder('./test')
+        interface.writeTableToCSV('./test/testout.csv', 
                                     interface.mainTableName)
         c = 0
-        with open('./Analysis/test/testout.csv', 'r') as f:
+        with open('./test/testout.csv', 'r') as f:
             dr = csv.DictReader(f)
             for line in dr:
                 c += 1
@@ -415,7 +414,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         data = interface.pullXYData('STATION', 'USR0000WALD', 'DATE', 
                                                               'TAVG')
         expected = [(1989, 43.6), (1995, 45.6), (2000, 45.1), 
@@ -435,7 +434,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.indexTable('newIndex', interface.mainTableName,
                                                     'STATION')
         data = interface.pullXYData('STATION', 'USR0000WALD', 'DATE', 
@@ -454,7 +453,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         try:
             interface.pullXYData('STATION', 'USR0000CKLA', 
                         'DATE', 'TAVG', indexName = 'noIndex')
@@ -483,29 +482,29 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
-        interface.saveMainConToDB('./Analysis/test/testout.sqlite')
+        interface.loadFolder('./test')
+        interface.saveMainConToDB('./test/testout.sqlite')
         
-        if not os.path.isfile('./Analysis/test/testout.sqlite'):
+        if not os.path.isfile('./test/testout.sqlite'):
             self.fail('No file on disk after trying to save database')
-        interface.connectMainSQL('./Analysis/test/testout.sqlite')
+        interface.connectMainSQL('./test/testout.sqlite')
         self.assertTrue(interface.mainTableName in interface.getTables())
         
     def test_writeMainConToDB_diskoverwrite(self):
-        '''Make sure we can write the main database connection to
-        a database on the disk and overwrite it'''
+        '''Make sure we can overwrite the main database connection to
+        a database on the disk.'''
         interface = DataInterface()
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         #save a database
-        interface.saveMainConToDB('./Analysis/test/testout.sqlite')
+        interface.saveMainConToDB('./test/testout.sqlite')
         self.assertTrue('differentTable' not in interface.getTables())
         interface.initSQL(':memory:', mainTableName = 'differentTable')
-        interface.saveMainConToDB('./Analysis/test/testout.sqlite',
+        interface.saveMainConToDB('./test/testout.sqlite',
                                             overwrite = True)
-        interface.connectMainSQL('./Analysis/test/testout.sqlite')
+        interface.connectMainSQL('./test/testout.sqlite')
         self.assertTrue('differentTable' in interface.getTables())
         
     def test_writeMainConToDB_memattach(self):
@@ -514,7 +513,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface = DataInterface()
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
-        interface.connectMainSQL('./Analysis/test/geodata.db', 
+        interface.connectMainSQL('./test/geodata.db', 
                                     mainTableName = 'dataTable')
         #save a ref to the current db con
         con = interface.maincon
@@ -532,11 +531,11 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.createGeoTable('geomindex', 'STATION',
                                                 'LONGITUDE', 'LATITUDE')
         result = interface.filter('STATION', 
-        './Analysis/test/states.sqlite', 'geomindex', 'states',
+        './test/states.sqlite', 'geomindex', 'states',
                                         'GEOMETRY' , 'GEOMETRY')
         self.assertEqual(len(result), 60)
         self.assertFalse('TEST' in result)
@@ -548,11 +547,11 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.createGeoTable('geomindex', 'STATION',
                                                 'LONGITUDE', 'LATITUDE')
         try:
-            interface.filter('STATION', './Analysis/test/states.sqlite',
+            interface.filter('STATION', './test/states.sqlite',
                       'geomindex', 'badTable', 'GEOMETRY' , 'GEOMETRY')
         except sqlite3.OperationalError:
             pass
@@ -565,11 +564,11 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.createGeoTable('geomindex', 'STATION',
                                                 'LONGITUDE', 'LATITUDE')
         try:
-            interface.filter('STATION', './Analysis/test/nofile.sqlite',
+            interface.filter('STATION', './test/nofile.sqlite',
                         'geomindex', 'states', 'GEOMETRY' , 'GEOMETRY')
         except sqlite3.OperationalError:
             pass
@@ -585,7 +584,7 @@ class DataInterfaceTest(unittest.TestCase):
         interface.setAttributeNames(['DATE', 'STATION','TAVG', 
                                      'LONGITUDE', 'LATITUDE'])
         interface.initSQL(':memory:')
-        interface.loadFolder('./Analysis/test')
+        interface.loadFolder('./test')
         interface.createGeoTable('geoTable', 'STATION',
                                                 'LONGITUDE', 'LATITUDE')
         stations = interface.pullUniqueKeys('STATION',
