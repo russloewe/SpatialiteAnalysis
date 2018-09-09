@@ -110,7 +110,6 @@ class DataInterface():
                                     xName, yName, xName, xName, yName, yName)
         sql = "UPDATE {} SET GEOMETRY = {}"\
                         .format(tableName, geom)
-        print sql
         cur.execute(sql)
         self.maincon.commit()
         
