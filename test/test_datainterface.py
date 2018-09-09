@@ -600,6 +600,14 @@ class DataInterfaceTest(unittest.TestCase):
         rs = interface.pullUniqueKeys('result', tableName = 'geoTable')
         self.assertTrue( '1.0' in rs)
     
+    def test_convertToGeoTable(self):
+        '''test convertToGeoTable'''
+        interface = DataInterface()
+        interface.setAttributeNames(['DATE', 'STATION','TAVG', 
+                                     'LONGITUDE', 'LATITUDE'])
+        interface.initSQL(':memory:', mainTableName = 'mainT')
+        interface.loadFolder('./test')
+        interface.convertToGeoTable('mainT', 'LONGITUDE', 'LATITUDE')
         
 if __name__ == "__main__":
     suite = unittest.makeSuite(DataInterfaceTest)
