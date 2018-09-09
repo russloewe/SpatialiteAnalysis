@@ -2,7 +2,7 @@ import csv, sqlite3
 import os
 import logging
 logging.getLogger(__name__)
-FORMAT = '%(asctime)-15s:%(levelname)s: {}: %(message)s'.format(__name__)
+FORMAT = '%(asctime)-15s: %(levelname)s: %(filename)s->%(funcName)s (%(lineno)s): %(message)s'
 logging.basicConfig(format=FORMAT, filename='{}.log'.format(__name__), level=logging.WARNING)
 class DataInterface():
     
@@ -78,6 +78,42 @@ class DataInterface():
             self.maincon = newdb
             self.mainTableName = mainTableName
    
+    def convertToGeoTable(self, tableName,  xName, yName,
+                        initSpatialite=False):
+        '''Add a geometry column to a table and get the point 
+        geometry from the xName and yName columns'''
+        logging.info('call: creatGeoTable("{}", "{}", "{}", '\
+                       ' initSpatialite={})'.format(
+                     tableName,  xName, yName, initSpatialite))
+        cur = self.getMainCur()
+        #make sure the input table is good
+        if self.mainTableName is None:
+            logging.error('No main table specified, cannot create' \
+                                                       'geo table')
+            raise AttributeError('No main table specified')
+        if self.mainTableName not in self.getTables():
+            logging.error('No table "{}" in main database, cannot '\
+                      'create geo table.'.format(self.mainTableName))
+            raise AttributeError('No table "{}" in main'\
+                            'database'.format(self.mainTableName))
+        
+        #init spaital lite or pass if it already has metadata
+        if initSpatialite:
+            logging.info('Initializing Spatialite metadata for "{}".'\
+                         .format(tableName))
+            cur.execute('SELECT InitSpatialMetadata()')
+        sql = "SELECT AddGeometryColumn('{}', 'GEOMETRY', 4326, "\
+              "'POINT', 'XY');".format(tableName)
+        cur.execute(sql)
+        
+        geom = "GeomFromText(REPLACE(REPLACE('POINT({} {})', '{}', {}), '{}', {}), 4326)".format(
+                                    xName, yName, xName, xName, yName, yName)
+        sql = "UPDATE {} SET GEOMETRY = {}"\
+                        .format(tableName, geom)
+        print sql
+        cur.execute(sql)
+        self.maincon.commit()
+        
     def createGeoTable(self, tableName, uniqueKey, xName, yName,
                        keySubset=None, initSpatialite=False):
         '''create a new table with a geometry point layer for 
