@@ -163,13 +163,36 @@ def runner5():
     print 'Writing data to sql database on disk'
     interface.saveMainConToDB('./test/calculated_trends.db', overwrite=True)  
         
+def runner6():
+    '''Load a folder of csv files and convert to a spatialite database
+    with a point geometry taken from the latitude and longitude columns'''
+    #startup the interface
+    interface = DataInterface()
+    
+    #specify the attributes that we are intersted in and init a database in memory
+    names = ['DATE', 'STATION', 'TAVG', 'NAME', 'LATITUDE', 'LONGITUDE']
+    interface.setAttributeNames(names)
+    interface.initSQL('')
+    
+    #load data from a folder of CSV files
+    print 'Loading Folder'
+    interface.loadFolder('./test/')
+    
+    print 'converting to geotable'
+    interface.convertToGeoTable('CSVdata', 'LATITUDE', 'LONGITUDE')
+    
+    print 'Writing data to sql database on disk'
+    interface.saveMainConToDB('./test/new.db', overwrite=True)  
+    
 if __name__ == "__main__":
     import os
     import cProfile
-    runner1()
-    runner2()
-    runner3()
-    runner4()
-    cProfile.run('runner5()')
+    #runner1()
+    #runner2()
+    #runner3()
+    #runner4()
+    #cProfile.run('runner5()')
+    runner6()
+
 
 
